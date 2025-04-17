@@ -1,0 +1,213 @@
+<!-- Template Source: 
+    FullPage.js,
+    com-480-data-visualization/project-2024-Moonwalker 
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animations</title>
+       
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.22/fullpage.min.js"></script>
+
+    
+    <style>
+
+        /* Style for our header texts
+        * --------------------------------------- */
+        h1{
+            font-size: 5em;
+            font-family: arial,helvetica;
+            color: #fff;
+            margin:0;
+        }
+        @font-face {
+        font-family: 'Waltograph';
+        src: url('fonts/waltographUI.ttf') format('truetype');
+        }
+        .home-title {
+            font-family: 'Waltograph', cursive;
+            font-size: 100px;
+            font-weight: bold;
+            color: #000; /* Replace this with your desired color */
+            text-align: center;
+            margin-top: 0; 
+            padding-bottom: 250px;
+            padding-right: 22px;
+            position: relative;
+        }
+        .intro p{
+            color: #fff;
+        }
+    
+        /* Centered texts in each section
+        * --------------------------------------- */
+        .section{
+            text-align: center;
+            height: 100vh; 
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            /* TODO: Change the background color */
+            background-image: 
+                /*linear-gradient(135deg, rgba(255, 255, 255, 0.5), transparent),
+                linear-gradient(225deg, rgba(255, 255, 255, 0.3), transparent),
+                linear-gradient(45deg, rgba(0, 0, 0, 0.1), transparent),
+                linear-gradient(315deg, rgba(0, 0, 0, 0.2), transparent),*/
+                linear-gradient(to bottom, #CDE1FF, #A3B6E0, #82117e);
+            background-blend-mode: overlay;
+            background-size: cover;
+            background-attachment: fixed;
+            color: #333;
+        }
+        .section2{
+            text-align: center;
+            height: 100vh; 
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            /* TODO: Change the background color */
+            background-image: 
+                linear-gradient(to bottom, #82117e, #A3B6E0, #CDE1FF);
+            background-blend-mode: overlay;
+            background-size: cover;
+            background-attachment: fixed;
+            color: #333;
+        }
+    
+        /* Overwriting styles for control arrows for slides
+        * --------------------------------------- */
+        .controlArrow.prev {
+            left: 50px;
+        }
+        .controlArrow.next{
+            right: 50px;
+        }
+    
+        /* Overwriting styles for navigation bullets
+        * --------------------------------------- */
+        #fp-nav ul li a span, 
+        .fp-slidesNav ul li a span{
+            background: white;
+        }
+    
+    
+        /* Bottom menu
+        * --------------------------------------- */
+        #infoMenu li a {
+            color: #fff;
+        }
+
+        /* Home page animation
+        * --------------------------------------- */
+
+        #section0 {
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        #intropage {
+            background-image: 
+                linear-gradient(to bottom, #82117e, #A3B6E0, #CDE1FF);
+        }
+        
+        #figure2 {
+            background-image: 
+                linear-gradient(to bottom, #82117e, #A3B6E0, #CDE1FF);
+        }
+        
+        #section_footer {
+            background-image: 
+                linear-gradient(to bottom, #82117e, #A3B6E0, #CDE1FF);
+        }
+        
+
+        /*  uniform font
+        * --------------------------------------- */
+        .center-justified-text {
+            text-align: justify;
+            text-align-last: center;
+            font-size: 1.2em;
+            font-family: 'Nunito', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="fullpage">
+        <div class="section" id="section0">
+            <div class="intro">
+                <div class="home-title">Animation Template</div>
+            </div>
+        </div>
+
+        <div class="section initial" id="intropage"></div>
+        <div class="section initial" id="figure1"></div>
+        <div class="section initial" id="figure2"></div>
+        <div class="section initial" id="figure3"></div>
+        <div class="section fp-auto-height" id="section_footer">
+
+        </div>
+    </div>
+    
+    <script>
+        $(document).ready(function(){
+            $("#fullpage").fullpage({
+                    // Navigation
+                    navigation: true,
+                    anchors: [
+                        "home",
+                        "introduction",
+                        "figure1",
+                        "figure2",
+                        "figure3",
+                        "about",
+                    ],
+                    slidesNavigation: true,
+                    // Scrolling
+                    css3: true,
+                    scrollingSpeed: 700,
+                    autoScrolling: true,
+                    // Design
+                    controlArrows: false,
+                    controlArrowsHTML: [
+                        '<div class="fp-arrow"></div>',
+                        '<div class="fp-arrow"></div>',
+                    ],
+                    verticalCentered: true,
+                    // menu: "#menu",
+                    // paddingTop: "3em",
+                    // paddingBottom: "10px",
+                    fixedElements: ".footer",
+
+                    afterLoad: function (origin, destination, direction) {
+                        let $section = $(destination.item);
+                        $section.addClass("fade-in");
+                    },
+
+                    onLeave: function (origin, destination, direction) {
+                        let $section = $(origin.item);
+                        let lastIndex = $("#fullpage .section").length - 2;
+                        let currentIdx = destination.index;
+
+                        if (currentIdx != lastIndex + 1) {
+                            $section.removeClass("fade-in");
+                        }
+                    },
+
+                    afterResize: function() {
+                        location.reload();
+                    }
+                });
+        });
+    </script>
+
+</body>
+</html>
