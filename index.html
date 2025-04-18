@@ -5,74 +5,8 @@
     <title>Animation Visuals</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.22/fullpage.min.css"
-    />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/4.0.22/fullpage.min.js"></script>
-    <script defer src="script.js"></script>
-
-    <style>
-      @font-face {
-        font-family: "Waltograph";
-        src: url("fonts/waltographUI.ttf") format("truetype");
-      }
-
-      body {
-        margin: 0;
-        font-family: "Arial", sans-serif;
-      }
-
-      .section {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        height: 100vh;
-        background: linear-gradient(to bottom, #cde1ff, #a3b6e0, #82117e);
-        color: white;
-        text-align: center;
-        padding: 40px;
-      }
-
-      h1 {
-        font-family: "Waltograph", cursive;
-        font-size: 4em;
-        margin-bottom: 20px;
-      }
-
-      img {
-        width: 60%;
-        max-width: 600px;
-        height: auto;
-        border-radius: 16px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-        margin-top: 20px;
-      }
-
-      nav {
-        position: fixed;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 100;
-        background: rgba(0, 0, 0, 0.4);
-        padding: 10px 20px;
-        border-radius: 12px;
-      }
-
-      nav a {
-        margin: 0 12px;
-        color: white;
-        text-decoration: none;
-        font-size: 1em;
-      }
-
-      nav a:hover {
-        text-decoration: underline;
-      }
-    </style>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <nav>
@@ -82,29 +16,37 @@
       <a href="#compare">Compare</a>
     </nav>
 
-    <div id="fullpage">
-      <div class="section" id="intro">
-        <h1>Welcome to Animation Insights</h1>
-        <p>
-          This interactive viewer shows visual data around animated movies
-          worldwide. Scroll or use tabs to explore.
-        </p>
-      </div>
+    <section id="intro">
+      <h1>Animation Insights</h1>
+      <p class="subtitle">
+        Project: Analyzing the Evolution and Impact of Animated Movies Worldwide
+      </p>
+      <p class="subtitle">Team: MoscowMickeyMule</p>
+      <p class="subtitle">
+        Members: Lina Bousbina, Michael Burch, Alessandro Salo
+      </p>
+      <p>
+        Dive into the magical world of animated movies with interactive
+        visualizations. Explore how animation genres have evolved, discover the
+        studios behind them, and compare your favorites in your own way.
+      </p>
+    </section>
 
-      <div class="section" id="map">
-        <h1>Map of Animation Studios</h1>
-        <img src="img/MAP.png" alt="Map of Animation Studios" />
-      </div>
+    <section id="map">
+      <h1>🗺️ Studio Map</h1>
+      <img src="img/MAP.png" alt="Map of Animation Studios" />
+    </section>
 
-      <div class="section" id="genre">
-        <h1>Genre Distribution</h1>
-        <img src="img/Genre.png" alt="Genre Distribution" />
-      </div>
+    <section id="genre">
+      <h1>📊 Genre Distribution</h1>
+      <img src="img/Genre.png" alt="Genre Distribution" />
+    </section>
 
-      <div class="section" id="compare">
-        <h1>Movie Comparison</h1>
-        <img src="img/Movie_compare.png" alt="Movie Comparison" />
-      </div>
-    </div>
+    <section id="compare">
+      <h1>🎥 Movie Comparison</h1>
+      <img src="img/Movie_compare.png" alt="Movie Comparison" />
+    </section>
+
+    <footer></footer>
   </body>
 </html>
