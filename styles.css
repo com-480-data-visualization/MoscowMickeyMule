@@ -112,3 +112,29 @@ footer {
     padding: 70px 5vw 30px;
   }
 }
+
+.tooltip {
+  position: absolute;
+  padding: 10px;
+  background: white;
+  border: 1px solid #999;
+  pointer-events: none;
+  font-size: 0.9rem;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#map h1 {
+  font-size: 1.5rem;
+  text-align: left;
+  margin-left: 20px;
+  color: white;
+}
+
+#world-map {
+  border: 2px solid white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin: auto;
+  display: block;
+}
