@@ -1,0 +1,56 @@
+
+#container {
+  display: flex;
+  padding: 20px;
+}
+
+.column {
+  width: 200px;
+  margin-right: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  min-height: 400px;
+  background-color: #f9f9f9;
+}
+
+.column-title {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+#display-column {
+  flex-grow: 1;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #fff;
+}
+
+#genre-list {
+  min-height: 300px;
+  background-color: #ffeedd;
+  border: 1px dashed #cc9966;
+  padding: 5px;
+}
+
+.genre-item {
+  padding: 10px 15px 15px 15px; ;
+  margin: 5px 5px;
+  cursor: grab;
+}
+
+.inactive-genres {
+  background-color: #ddeeff;
+  border: 1px solid #99bbdd;
+}
+
+#active-filters {
+  min-height: 300px;
+  background-color: #ffeedd;
+  border: 1px dashed #cc9966;
+  padding: 5px;
+}
+
+.active-genre {
+  background-color: #ffddaa;
+  border: 1px solid #cc9966;
+}
