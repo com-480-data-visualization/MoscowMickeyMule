@@ -5,7 +5,7 @@
   <title>Genre Mix and Match</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../styles.css">
+  <!-- <link rel="stylesheet" href="../styles.css"> -->
   <link rel="stylesheet" href="styles.css">
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -22,8 +22,17 @@
           <div id="active-filters"></div>
         </div>
         <div id="display-column">
-          <h3 class="column-title">Data Display</h3>
-          <div id="data-display"></div>
+            <h3 class="column-title">Data Display</h3>
+            <div class="display-container">
+                <button class="nav-button prev">←</button>
+                <div class="display-wrapper">
+                    <div class="display-slide" id="data-display-1"></div>
+                    <div class="display-slide" id="data-display-2"></div>
+                    <div class="display-slide" id="data-display-3"></div>
+                    <div class="display-slide" id="data-display-4"></div>
+                </div>
+                <button class="nav-button next">→</button>
+            </div>
         </div>
       </div>
     

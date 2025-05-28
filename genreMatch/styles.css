@@ -1,4 +1,3 @@
-
 #container {
   display: flex;
   padding: 20px;
@@ -53,4 +52,56 @@
 .active-genre {
   background-color: #ffddaa;
   border: 1px solid #cc9966;
+}
+
+.display-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.display-wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 500px;
+}
+
+.display-slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    transform: translateX(100%);
+    transition: transform 0.5s ease;
+}
+
+.display-slide.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.slide-left {
+    transform: translateX(-100%);
+}
+
+.slide-right {
+    transform: translateX(100%);
+}
+
+.nav-button {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 0 10px;
+    font-size: 18px;
+}
+
+.nav-button:hover {
+    background: #666;
 }
