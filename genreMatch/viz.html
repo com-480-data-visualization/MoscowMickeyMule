@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Genre Mix and Match</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- <link rel="stylesheet" href="../styles.css"> -->
+  <link rel="stylesheet" href="styles.css">
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+
+    <div id="container">
+        <div id="genre-column" class="column">
+          <h3 class="column-title">Genres</h3>
+          <div id="genre-list"></div>
+        </div>
+        <div id="active-filter-column" class="column">
+          <h3 class="column-title">Active Filters</h3>
+          <div id="active-filters"></div>
+        </div>
+        
+        <div id="display-column">
+            <h3 class="column-title">Data Display</h3>
+            <div class="display-container">
+                <div class="display-wrapper">
+                    <div class="display-slide" id="data-display-1"></div>
+                    <div class="display-slide" id="data-display-2"></div>
+                    <div class="display-slide" id="data-display-3"></div>
+                    <div class="display-slide" id="data-display-4"></div>
+                </div>
+                <div class="nav-buttons-wrapper">
+                    <button class="nav-button prev">←</button>
+                    <button class="nav-button next">→</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    
+      <script type="module" src="script.js"></script>
+
+</body>
+</html>
