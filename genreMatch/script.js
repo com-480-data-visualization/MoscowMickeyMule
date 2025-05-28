@@ -1,3 +1,5 @@
+import { createBarChart, createBubbleChart } from './generateChartFunctions.js';
+
 let genres = [];
 
 /*====================
@@ -34,13 +36,36 @@ function createGenreList() {
     .data(genres)
     .enter()
     .append("div")
-    .attr("class", "genre-item inactive-genres")
+    .attr("class", "genre-item inactive-genres-safe")
     .text(d => d)
     .call(d3.drag()
       .on("start", dragstarted)
       .on("drag", draggedActive)
       .on("end", draggedToActive)
     );
+}
+
+// FUNCTION TO CREATE GRAYED OUT INACTIVE GENRES
+function createGrayedGenres(data) { 
+  d3.select("#genre-list")
+    .selectAll(".genre-item")
+    .each(function(d) {
+      // Create a test set with current active genres plus this genre
+      const testGenres = new Set(activeGenres);
+      testGenres.add(d);
+      
+      // Check if adding this genre would result in any matches
+      const wouldHaveMatches = data.some(movie => 
+        Array.from(testGenres).every(genre => 
+          movie.genres.includes(genre)
+        )
+      );
+
+      // Update classes based on whether there would be matches
+      d3.select(this)
+        .classed("inactive-genres-safe", wouldHaveMatches)
+        .classed("inactive-genres-gray", !wouldHaveMatches);
+    });
 }
 // CREATE ACTIVE GENRE SET (ENSURE ANIMATION IS INSIDE)
 const activeGenres = new Set();
@@ -54,18 +79,33 @@ let offsetX, offsetY; // Variables to store the offset
 
 // HANDLE DRAG STARTING EVENT (OPACITY CHANGE)
 function dragstarted(event, d) {
-    d3.select(this).style("opacity", 0.5);
+  const element = d3.select(this);
+  const bbox = element.node().getBoundingClientRect();
+  const elementWidth = bbox.width;
+  const elementHeight = bbox.height;
+  
+  // Store the initial offset between mouse position and element position
+  element
+      .style("position", "absolute")
+      .style("pointer-events", "none")
+      .style("opacity", 0.8);
+  d3.select(this)
+    .style("left", (event.sourceEvent.pageX - elementWidth/2) + "px")
+    .style("top", (event.sourceEvent.pageY - elementHeight/2) + "px");
+}
+
+function draggedActive(event, d) {
+  const element = d3.select(this);
+  const bbox = element.node().getBoundingClientRect();
+  const elementWidth = bbox.width;
+  const elementHeight = bbox.height;
+  
+  d3.select(this)
+      .style("left", (event.sourceEvent.pageX - elementWidth/2) + "px")
+      .style("top", (event.sourceEvent.pageY - elementHeight/2) + "px");
 }
 
 // HANDLE DRAGGING TO ACTIVE FILTERS COLUMN
-function draggedActive(event, d) { // While Dragging
-  d3.select(this)
-    .style("position", "absolute")
-    .style("left",(event.x -20) + "px")
-    .style("top", (event.y + 35) + "px");
-    // console.log("Dragging at:", event.x, event.y);
-}
-
 function draggedToActive(event, d) { // When Dragging Ends
   d3.select(this).style("opacity", 1);
 
@@ -88,12 +128,19 @@ function draggedToActive(event, d) { // When Dragging Ends
           .on("drag", draggedInactive)
           .on("end", draggedToInactive)
       );
-      
+    
+    // Gray out inactive genres that would result in combinations with 0 movies
+    d3.select("#genre-list")
+
     // Add the genre to the active genres set
     activeGenres.add(d);
     
-    console.log("Active genres:", activeGenres);
-      // Remove the dragged element from the inactive genres
+    d3.json("genreMatchTopRatings.json")
+      .then(data => {
+        createGrayedGenres(data);
+      });
+    //console.log("Active genres:", activeGenres);
+    // Remove the dragged element from the inactive genres
     d3.select(this).remove();
     // Update the display with the new active genres
     updateDisplay();
@@ -108,12 +155,15 @@ function draggedToActive(event, d) { // When Dragging Ends
 }
 
 // HANDLE DRAGGING BACK TO INACTIVE GENRES COLUMN
-function draggedInactive(event, d) { // While Dragging
+function draggedInactive(event, d) {
+  const element = d3.select(this);
+  const bbox = element.node().getBoundingClientRect();
+  const elementWidth = bbox.width;
+  const elementHeight = bbox.height;
+  
   d3.select(this)
-    .style("position", "absolute")
-    .style("left",(event.x + 185) + "px")
-    .style("top", (event.y + 35) + "px");
-    // console.log("Dragging at:", event.x, event.y);
+      .style("left", (event.sourceEvent.pageX - elementWidth/2) + "px")
+      .style("top", (event.sourceEvent.pageY - elementHeight/2) + "px");
 }
 
  // Called when dragged back to inactive to reset the list
@@ -143,7 +193,7 @@ function draggedInactive(event, d) { // While Dragging
           .data(currentGenres)
           .enter()
           .append("div")
-          .attr("class", "genre-item inactive-genres")
+          .attr("class", "genre-item inactive-genres-safe")
           .text(d => d)
           .call(d3.drag()
               .on("start", dragstarted)
@@ -156,8 +206,12 @@ function draggedInactive(event, d) { // While Dragging
       // Remove the dragged element from the active filters
       d3.select(this).remove();
 
-      // Update the display
+      d3.json("genreMatchTopRatings.json")
+      .then(data => {
+        createGrayedGenres(data);
+      });
       updateDisplay();
+
   } else {
       // If not dropped in the genre list, reset the element's position
       d3.select(this)
@@ -229,7 +283,7 @@ function navigateSlides(direction) {
 function updateDisplay() {
   d3.json("genreMatchTopRatings.json")
   .then(data => {
-    ratingsData = data;
+    const ratingsData = data;
     
     // Call the function to update the display with the loaded data
     
@@ -243,111 +297,6 @@ function updateDisplay() {
     createTopStudiosSlide(filteredData); // Create the top studios slide
     createTotalMovieSlide(filteredData); // Create the total movie count slide
   })
-}
-
-// TEST FUNCTION TO CREATE A BAR CHART
-function createBarChart(data, container) {
-  const topFive = data.slice(0, 5);
-  
-  const marginTop = 50;
-  const marginRight = 0;
-  const marginBottom = 10;
-  const marginLeft = 30;
-  const width = 928;
-  const height = 300;
-
-  // Create scales
-  const x = d3.scaleLinear()
-        .domain([0, d3.max(topFive, d => d.weighted_rating)])
-        .range([marginLeft, width - marginRight]);
-    
-  const y = d3.scaleBand()
-      .domain(topFive.map(d => d.title))
-      .rangeRound([marginTop, height - marginBottom])
-      .padding(0.1);
-
-  // Select or create SVG
-  let svg = d3.select(`${container} svg`);
-  
-  if (svg.empty()) {
-    // First time creation
-    svg = d3.select(container)
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("viewBox", [0, 0, width, height])
-        .attr("style", "max-width: 100%; height: auto; font: 10px sans-serif;");
-    
-    // Create axes groups only once
-    svg.append("g")
-        .attr("class", "x-axis")
-        .attr("transform", `translate(0,${marginTop})`);
-    
-    svg.append("g")
-        .attr("class", "y-axis")
-        .attr("transform", `translate(${marginLeft},0)`);
-  }
-
-  // Update axes
-  svg.select(".x-axis")
-    .transition()
-    .duration(750)
-    .call(d3.axisTop(x).ticks(width / 80))
-    .call(g => g.select(".domain").remove());
-  
-  svg.select(".y-axis")
-    .transition()
-    .duration(750)
-    .call(d3.axisLeft(y).tickSizeOuter(0));
-
-  // Update or create rectangles
-  const bars = svg.selectAll("rect")
-    .data(topFive);
-
-  // Remove extra bars
-  bars.exit().remove();
-
-  // Update existing bars
-  bars.transition()
-    .duration(750)
-    .attr("x", x(0))
-    .attr("y", d => y(d.title))
-    .attr("width", d => x(d.weighted_rating) - x(0))
-    .attr("height", y.bandwidth());
-
-  // Add new bars
-  bars.enter()
-    .append("rect")
-    .attr("fill", "steelblue")
-    .attr("x", x(0))
-    .attr("y", d => y(d.title))
-    .attr("width", d => x(d.weighted_rating) - x(0))
-    .attr("height", y.bandwidth());
-
-  // Update or create text labels
-  const labels = svg.selectAll("text.bar-label")
-    .data(topFive);
-
-  // Remove extra labels
-  labels.exit().remove();
-  
-  // Update existing labels
-  labels.transition()
-    .duration(750)
-    .attr("x", d => (x(d.weighted_rating) - x(0)) / 2)
-    .attr("y", d => y(d.title) + y.bandwidth() / 2)
-    .text(d => d.title);
-  
-  // Add new labels
-  labels.enter()
-    .append("text")
-    .attr("class", "bar-label")
-    .attr("fill", "white")
-    .attr("text-anchor", "middle")
-    .attr("dy", "0.35em")
-    .attr("x", d => (x(d.weighted_rating) - x(0)) / 2)
-    .attr("y", d => y(d.title) + y.bandwidth() / 2)
-    .text(d => d.title);
 }
 
 document.addEventListener('DOMContentLoaded', initializeSlides);
@@ -368,9 +317,9 @@ function createTopMoviesSlide(data) {
   slide.selectAll("*").remove();
   
   // Create title
-  slide.append("h2").text("Top 5 Movies by weighted Rating");
-  
-  createBarChart(topFive, "#data-display-1");
+  slide.append("h4").text("Top 5 Movies by weighted Rating");
+  createBubbleChart(topFive, "#data-display-1");
+  //createBarChart(topFive, "#data-display-1");
 }
 
 /*====================
