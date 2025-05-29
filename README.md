@@ -1,5 +1,6 @@
 # MoscowMickeyMule
 
+Link: https://com-480-data-visualization.github.io/MoscowMickeyMule/
 
 This visualization website provides both a macro-level overview of global animation industry trends and a micro-level lens into studio origins—bridging data exploration with historical storytelling.
 
@@ -24,6 +25,26 @@ This interactive D3 map visualizes the emergence and geographic distribution of 
   - **Total Number of Movies**
 - **Sliding Window Layout**: To maintain clarity, statistics are split across separate slides. Users navigate between slides with buttons, each focusing on one data aspect.
 - **Treemap Visualizations**: For top genres and studios, treemaps efficiently fill the rectangular display, using size and color differences to highlight leading entries.
+
+### 🎥 Movie Comparison Visualization
+
+An interactive tool for exploring and comparing animated movies from a comprehensive dataset of 50,000+ films. Users can search, filter, and perform side-by-side comparisons of key movie metrics.
+
+#### Features
+
+- **Dual-Panel Interface**: Movie discovery on the left, comparison visualization on the right, creating an intuitive search-to-analysis workflow.
+- **Advanced Search & Filtering**: Filter movies by:
+ - **Genre Selection**: Choose from animation sub-genres
+ - **Release Year**: Focus on specific time periods
+ - **Movie Title**: Real-time text search functionality
+- **Interactive Movie Cards**: Clickable search results showing title, year, rating, and genres with hover effects for enhanced user experience.
+- **Click-to-Compare Selection**: Simple interaction where users click movie cards to populate comparison slots with visual feedback and flexible management.
+- **Dynamic Comparative Charts**: Selected movies generate horizontal bar charts comparing:
+ - **IMDB Ratings**
+ - **Box Office Revenue**
+ - **Runtime Duration** 
+ - **Production Budget**
+- **Responsive Design**: Color-coded visualizations with value labels and legends, automatically scaling for clear metric comparison.
 
 ### 💡 Insights
 
