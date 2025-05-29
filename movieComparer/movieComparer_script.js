@@ -1,5 +1,5 @@
-// Movie Comparison Tool - Complete Implementation
-console.log("Movie comparer script loaded!");
+// Disney-Themed Movie Comparer Script
+console.log("Disney-themed movie comparer loaded!");
 
 let allMovies = [];
 let filteredMovies = [];
@@ -33,8 +33,111 @@ d3.csv("movieComparer/movieComparer_df.csv").then(data => {
     
 }).catch(error => {
     console.error("Error loading CSV:", error);
-    d3.select("#compare").append("p").text("❌ Error loading movie data").style("color", "red");
+    
+    // Fallback to sample data for testing
+    console.log("Loading sample data for testing...");
+    initializeWithSampleData();
 });
+
+// Sample movie data for testing
+function initializeWithSampleData() {
+    const sampleMovies = [
+        {
+            title: "The Lion King",
+            vote_average: 8.5,
+            revenue: 968483777,
+            runtime: 88,
+            budget: 45000000,
+            release_date: "1994-06-24",
+            release_year: 1994,
+            genres: ["Animation", "Family", "Drama"],
+            genres_string: "Animation, Family, Drama"
+        },
+        {
+            title: "Frozen",
+            vote_average: 7.3,
+            revenue: 1280802282,
+            runtime: 102,
+            budget: 150000000,
+            release_date: "2013-11-27",
+            release_year: 2013,
+            genres: ["Animation", "Family", "Adventure"],
+            genres_string: "Animation, Family, Adventure"
+        },
+        {
+            title: "Toy Story",
+            vote_average: 8.3,
+            revenue: 373554033,
+            runtime: 81,
+            budget: 30000000,
+            release_date: "1995-10-30",
+            release_year: 1995,
+            genres: ["Animation", "Family", "Comedy"],
+            genres_string: "Animation, Family, Comedy"
+        },
+        {
+            title: "Finding Nemo",
+            vote_average: 8.2,
+            revenue: 940335536,
+            runtime: 100,
+            budget: 94000000,
+            release_date: "2003-05-30",
+            release_year: 2003,
+            genres: ["Animation", "Family", "Adventure"],
+            genres_string: "Animation, Family, Adventure"
+        },
+        {
+            title: "Moana",
+            vote_average: 7.6,
+            revenue: 645949557,
+            runtime: 107,
+            budget: 150000000,
+            release_date: "2016-11-23",
+            release_year: 2016,
+            genres: ["Animation", "Family", "Adventure"],
+            genres_string: "Animation, Family, Adventure"
+        },
+        {
+            title: "Spirited Away",
+            vote_average: 8.6,
+            revenue: 347789370,
+            runtime: 125,
+            budget: 19000000,
+            release_date: "2001-07-20",
+            release_year: 2001,
+            genres: ["Animation", "Family", "Supernatural"],
+            genres_string: "Animation, Family, Supernatural"
+        },
+        {
+            title: "Coco",
+            vote_average: 8.4,
+            revenue: 807825881,
+            runtime: 105,
+            budget: 175000000,
+            release_date: "2017-10-27",
+            release_year: 2017,
+            genres: ["Animation", "Family", "Music"],
+            genres_string: "Animation, Family, Music"
+        },
+        {
+            title: "Inside Out",
+            vote_average: 8.1,
+            revenue: 858846029,
+            runtime: 95,
+            budget: 175000000,
+            release_date: "2015-06-19",
+            release_year: 2015,
+            genres: ["Animation", "Family", "Comedy"],
+            genres_string: "Animation, Family, Comedy"
+        }
+    ];
+    
+    allMovies = [...sampleMovies];
+    filteredMovies = [...allMovies];
+    
+    createInterface();
+    displayMovieResults(filteredMovies);
+}
 
 function createInterface() {
     // Clear existing content
@@ -43,55 +146,31 @@ function createInterface() {
     // Main container
     const container = d3.select("#compare")
         .append("div")
-        .attr("class", "movie-comparer-container")
-        .style("display", "flex")
-        .style("gap", "20px")
-        .style("max-width", "1200px")
-        .style("margin", "0 auto");
+        .attr("id", "container");
     
     // Left panel - Movie Finder
     const leftPanel = container.append("div")
-        .attr("class", "movie-finder")
-        .style("flex", "1")
-        .style("background", "white")
-        .style("padding", "20px")
-        .style("border-radius", "10px")
-        .style("box-shadow", "0 4px 8px rgba(0,0,0,0.1)");
+        .attr("class", "column");
     
     // Search controls
-    const searchSection = leftPanel.append("div").attr("class", "search-section");
-    
-    searchSection.append("h3")
-        .text("🔍 Movie Finder")
-        .style("margin-top", "0")
-        .style("color", "#333");
+    leftPanel.append("h3")
+        .attr("class", "column-title")
+        .text("🔍 Movie Finder");
     
     // Search input
-    searchSection.append("input")
+    leftPanel.append("input")
         .attr("type", "text")
         .attr("id", "movie-search")
         .attr("placeholder", "Search movies...")
-        .style("width", "100%")
-        .style("padding", "10px")
-        .style("border", "2px solid #ddd")
-        .style("border-radius", "5px")
-        .style("margin-bottom", "15px")
-        .style("font-size", "14px")
         .on("input", handleSearch);
     
-    // Filters
-    const filtersDiv = searchSection.append("div")
-        .style("display", "flex")
-        .style("gap", "10px")
-        .style("margin-bottom", "15px")
-        .style("flex-wrap", "wrap");
+    // Filters container
+    const filtersDiv = leftPanel.append("div")
+        .style("margin-bottom", "15px");
     
     // Genre filter
     const genreSelect = filtersDiv.append("select")
         .attr("id", "genre-filter")
-        .style("padding", "8px")
-        .style("border", "1px solid #ddd")
-        .style("border-radius", "5px")
         .on("change", handleSearch);
     
     genreSelect.append("option").attr("value", "").text("All Genres");
@@ -103,9 +182,6 @@ function createInterface() {
     // Year filter
     const yearSelect = filtersDiv.append("select")
         .attr("id", "year-filter")
-        .style("padding", "8px")
-        .style("border", "1px solid #ddd")
-        .style("border-radius", "5px")
         .on("change", handleSearch);
     
     yearSelect.append("option").attr("value", "").text("All Years");
@@ -116,74 +192,37 @@ function createInterface() {
     
     // Results container
     leftPanel.append("div")
-        .attr("id", "movie-results")
-        .style("max-height", "500px")
-        .style("overflow-y", "auto")
-        .style("border", "1px solid #eee")
-        .style("border-radius", "5px")
-        .style("padding", "10px");
+        .attr("id", "movie-results");
     
     // Right panel - Comparison
     const rightPanel = container.append("div")
-        .attr("class", "comparison-panel")
-        .style("flex", "1")
-        .style("background", "white")
-        .style("padding", "20px")
-        .style("border-radius", "10px")
-        .style("box-shadow", "0 4px 8px rgba(0,0,0,0.1)");
+        .attr("id", "display-column");
     
     rightPanel.append("h3")
-        .text("🎬 Your Personal Movie Comparison")
-        .style("margin-top", "0")
-        .style("color", "#333")
-        .style("text-align", "center");
-    
+        .style("font-size", "25px")
+        .style("margin-top", "-10px")
+        .text("🎬 Movie Battle Arena");
+
     // Movie slots
     const slotsContainer = rightPanel.append("div")
-        .style("display", "flex")
-        .style("gap", "20px")
-        .style("margin-bottom", "20px");
+        .attr("class", "slots-container");
     
     // Movie 1 slot
     slotsContainer.append("div")
         .attr("id", "movie-slot-1")
         .attr("class", "movie-slot")
-        .style("flex", "1")
-        .style("height", "100px")
-        .style("border", "2px dashed #ccc")
-        .style("border-radius", "8px")
-        .style("display", "flex")
-        .style("align-items", "center")
-        .style("justify-content", "center")
-        .style("color", "#999")
-        .style("font-size", "14px")
         .text("Click a movie to add here");
     
     // Movie 2 slot
     slotsContainer.append("div")
         .attr("id", "movie-slot-2")
         .attr("class", "movie-slot")
-        .style("flex", "1")
-        .style("height", "100px")
-        .style("border", "2px dashed #ccc")
-        .style("border-radius", "8px")
-        .style("display", "flex")
-        .style("align-items", "center")
-        .style("justify-content", "center")
-        .style("color", "#999")
-        .style("font-size", "14px")
         .text("Click a movie to add here");
     
     // Comparison chart container
     rightPanel.append("div")
         .attr("id", "comparison-chart")
-        .style("min-height", "300px")
-        .style("display", "flex")
-        .style("align-items", "center")
-        .style("justify-content", "center")
-        .style("color", "#999")
-        .style("font-size", "16px")
-        .text("Select two movies to see comparison");
+        // .text("Select two movies to see their epic battle!");
 }
 
 function handleSearch() {
@@ -209,8 +248,9 @@ function displayMovieResults(movies) {
     if (movies.length === 0) {
         resultsContainer.append("p")
             .text("No movies found")
-            .style("color", "#999")
-            .style("text-align", "center");
+            .style("color", "white")
+            .style("text-align", "center")
+            .style("font-family", "Waltograph, Arial, sans-serif");
         return;
     }
     
@@ -219,31 +259,17 @@ function displayMovieResults(movies) {
         .enter()
         .append("div")
         .attr("class", "movie-card")
-        .style("border", "1px solid #eee")
-        .style("border-radius", "5px")
-        .style("padding", "10px")
-        .style("margin-bottom", "8px")
-        .style("cursor", "pointer")
-        .style("transition", "all 0.2s")
-        .on("mouseover", function() {
-            d3.select(this).style("background-color", "#f5f5f5").style("border-color", "#4ecdc4");
-        })
-        .on("mouseout", function() {
-            d3.select(this).style("background-color", "white").style("border-color", "#eee");
-        })
         .on("click", function(event, d) {
             selectMovie(d);
         });
     
     movieCards.append("div")
-        .style("font-weight", "bold")
-        .style("margin-bottom", "5px")
+        .attr("class", "movie-title")
         .text(d => d.title);
     
     movieCards.append("div")
-        .style("font-size", "12px")
-        .style("color", "#666")
-        .text(d => `${d.release_year} • ⭐ ${d.vote_average.toFixed(1)} • ${d.genres.slice(0, 3).join(", ")}`);
+        .attr("class", "movie-details")
+        .text(d => `${d.release_year} • ⭐ ${d.vote_average.toFixed(1)} • ${d.genres.slice(0, 2).join(", ")}`);
 }
 
 function selectMovie(movie) {
@@ -257,10 +283,15 @@ function selectMovie(movie) {
         // Replace movie1 with new selection
         selectedMovies.movie1 = movie;
         updateMovieSlot("movie-slot-1", movie);
+        // Clear movie2 slot
+        selectedMovies.movie2 = null;
+        clearMovieSlot("movie-slot-2");
     }
     
     if (selectedMovies.movie1 && selectedMovies.movie2) {
         createComparison();
+    } else {
+        clearComparison();
     }
 }
 
@@ -268,37 +299,24 @@ function updateMovieSlot(slotId, movie) {
     const slot = d3.select(`#${slotId}`);
     slot.selectAll("*").remove();
     
-    slot.style("border", "2px solid #4ecdc4")
-        .style("background-color", "#f0f9ff");
+    slot.classed("filled", true);
     
     slot.append("div")
-        .style("font-weight", "bold")
-        .style("margin-bottom", "5px")
-        .style("color", "#333")
-        .text(movie.title);
+        .attr("class", "slot-title")
+        .text(movie.title.length > 20 ? movie.title.substring(0, 20) + "..." : movie.title);
     
     slot.append("div")
-        .style("font-size", "12px")
-        .style("color", "#666")
+        .attr("class", "slot-details")
         .text(`${movie.release_year} • ⭐ ${movie.vote_average.toFixed(1)}`);
     
     // Add clear button
     slot.append("button")
+        .attr("class", "clear-button")
         .text("×")
-        .style("position", "absolute")
-        .style("top", "5px")
-        .style("right", "5px")
-        .style("background", "none")
-        .style("border", "none")
-        .style("font-size", "18px")
-        .style("color", "#999")
-        .style("cursor", "pointer")
         .on("click", function(event) {
             event.stopPropagation();
             clearMovieSlot(slotId);
         });
-    
-    slot.style("position", "relative");
 }
 
 function clearMovieSlot(slotId) {
@@ -310,10 +328,8 @@ function clearMovieSlot(slotId) {
     
     const slot = d3.select(`#${slotId}`);
     slot.selectAll("*").remove();
-    slot.style("border", "2px dashed #ccc")
-        .style("background-color", "white")
-        .style("position", "static")
-        .text("Click a movie to add here");
+    slot.classed("filled", false);
+    slot.text("Click a movie to add here");
     
     // Update comparison
     if (selectedMovies.movie1 && selectedMovies.movie2) {
@@ -331,10 +347,10 @@ function clearComparison() {
         .style("display", "flex")
         .style("align-items", "center")
         .style("justify-content", "center")
-        .style("color", "#999")
-        .style("font-size", "16px")
-        .text("Select two movies to see comparison");
 }
+
+// In your movieComparer_script.js file, find the createComparison() function
+// and replace the "Chart dimensions" section with this:
 
 function createComparison() {
     const movie1 = selectedMovies.movie1;
@@ -346,23 +362,56 @@ function createComparison() {
     chartContainer.selectAll("*").remove();
     chartContainer.style("display", "block");
     
+    // Add chart title
+    chartContainer.append("div")
+        .attr("class", "chart-title")
+        .text("⚔️ Movie Battle Results ⚔️");
+    
+    // ADD LEGEND HERE - BEFORE THE CHART
+    const legend = chartContainer.append("div")
+        .attr("class", "comparison-legend")
+        .style("margin-bottom", "20px")  // Space below legend
+        .style("margin-top", "10px");    // Space above legend
+    
+    const legend1 = legend.append("div")
+        .attr("class", "legend-item");
+    
+    legend1.append("div")
+        .attr("class", "legend-color")
+        .style("background", "rgba(86, 22, 67, 1)");
+    
+    legend1.append("span")
+        .text(movie1.title.length > 15 ? movie1.title.substring(0, 15) + "..." : movie1.title);
+    
+    const legend2 = legend.append("div")
+        .attr("class", "legend-item");
+    
+    legend2.append("div")
+        .attr("class", "legend-color")
+        .style("background", "rgba(110, 13, 37, 1)");
+    
+    legend2.append("span")
+        .text(movie2.title.length > 15 ? movie2.title.substring(0, 15) + "..." : movie2.title);
+    
     // Prepare comparison data
     const metrics = [
-        { name: "Rating", value1: movie1.vote_average, value2: movie2.vote_average, max: 10 },
-        { name: "Revenue (M$)", value1: movie1.revenue / 1000000, value2: movie2.revenue / 1000000, max: Math.max(movie1.revenue, movie2.revenue) / 1000000 || 1000 },
-        { name: "Runtime (min)", value1: movie1.runtime, value2: movie2.runtime, max: Math.max(movie1.runtime, movie2.runtime) || 200 },
-        { name: "Budget (M$)", value1: movie1.budget / 1000000, value2: movie2.budget / 1000000, max: Math.max(movie1.budget, movie2.budget) / 1000000 || 200 }
+        { name: "Rating", value1: movie1.vote_average, value2: movie2.vote_average, max: 10, unit: "/10" },
+        { name: "Revenue", value1: movie1.revenue / 1000000, value2: movie2.revenue / 1000000, max: Math.max(movie1.revenue, movie2.revenue) / 1000000 || 1000, unit: "M$" },
+        { name: "Runtime", value1: movie1.runtime, value2: movie2.runtime, max: Math.max(movie1.runtime, movie2.runtime) || 200, unit: "min" },
+        { name: "Budget", value1: movie1.budget / 1000000, value2: movie2.budget / 1000000, max: Math.max(movie1.budget, movie2.budget) / 1000000 || 200, unit: "M$" }
     ];
     
     // Chart dimensions
-    const margin = { top: 20, right: 30, bottom: 40, left: 100 };
-    const width = 500 - margin.left - margin.right;
-    const height = 300 - margin.top - margin.bottom;
+    const margin = { top: 60, right: 80, bottom: 60, left: 100 };  // Reduced top margin since legend is above
+    const width = 800 - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;  // Slightly reduced height
     
     // Create SVG
     const svg = chartContainer.append("svg")
         .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom);
+        .attr("height", height + margin.top + margin.bottom)
+        .style("background", "rgba(255, 255, 255, 0.05)")
+        .style("border-radius", "0px");
     
     const g = svg.append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -371,7 +420,7 @@ function createComparison() {
     const yScale = d3.scaleBand()
         .domain(metrics.map(d => d.name))
         .range([0, height])
-        .padding(0.2);
+        .padding(0.4);
     
     const xScale = d3.scaleLinear()
         .domain([0, d3.max(metrics, d => Math.max(d.value1, d.value2))])
@@ -389,78 +438,65 @@ function createComparison() {
         .attr("class", "bar-movie1")
         .attr("x", 0)
         .attr("y", 0)
-        .attr("width", d => xScale(d.value1))
-        .attr("height", yScale.bandwidth() / 2)
-        .attr("fill", "#4ecdc4")
-        .attr("opacity", 0.8);
+        .attr("width", 0)
+        .attr("height", yScale.bandwidth() / 2.5)
+        .attr("fill", "rgba(86, 22, 67, 1)")
+        .attr("rx", 4)
+        .transition()
+        .duration(1000)
+        .attr("width", d => xScale(d.value1));
     
     // Movie 2 bars
     metricGroups.append("rect")
         .attr("class", "bar-movie2")
         .attr("x", 0)
         .attr("y", yScale.bandwidth() / 2)
-        .attr("width", d => xScale(d.value2))
-        .attr("height", yScale.bandwidth() / 2)
-        .attr("fill", "#ff6b6b")
-        .attr("opacity", 0.8);
+        .attr("width", 0)
+        .attr("height", yScale.bandwidth() / 2.5)
+        .attr("fill", "rgba(110, 13, 37, 1)")
+        .attr("rx", 4)
+        .transition()
+        .duration(1000)
+        .delay(200)
+        .attr("width", d => xScale(d.value2));
     
     // Add value labels
     metricGroups.append("text")
-        .attr("x", d => xScale(d.value1) + 5)
-        .attr("y", yScale.bandwidth() / 4)
+        .attr("class", "value-label")
+        .attr("x", d => xScale(d.value1) + 8)
+        .attr("y", yScale.bandwidth() / 5)
         .attr("dy", "0.35em")
-        .attr("font-size", "12px")
-        .attr("fill", "#333")
-        .text(d => d.value1.toFixed(1));
+        .attr("opacity", 0)
+        .text(d => `${d.value1.toFixed(1)}${d.unit}`)
+        .transition()
+        .duration(500)
+        .delay(1200)
+        .attr("opacity", 1);
     
     metricGroups.append("text")
-        .attr("x", d => xScale(d.value2) + 5)
-        .attr("y", (yScale.bandwidth() / 4) * 3)
+        .attr("class", "value-label")
+        .attr("x", d => xScale(d.value2) + 8)
+        .attr("y", (yScale.bandwidth() / 5) * 3.5)
         .attr("dy", "0.35em")
-        .attr("font-size", "12px")
-        .attr("fill", "#333")
-        .text(d => d.value2.toFixed(1));
+        .attr("opacity", 0)
+        .text(d => `${d.value2.toFixed(1)}${d.unit}`)
+        .transition()
+        .duration(500)
+        .delay(1400)
+        .attr("opacity", 1);
     
-    // Y axis
+    // Y axis labels
     g.append("g")
-        .call(d3.axisLeft(yScale))
         .selectAll("text")
-        .attr("font-size", "12px");
+        .data(metrics)
+        .enter()
+        .append("text")
+        .attr("class", "metric-label")
+        .attr("x", -15)
+        .attr("y", d => yScale(d.name) + yScale.bandwidth() / 2)
+        .attr("dy", "0.35em")
+        .attr("text-anchor", "end")
+        .text(d => d.name);
     
-    // X axis
-    g.append("g")
-        .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(xScale).ticks(5))
-        .selectAll("text")
-        .attr("font-size", "12px");
-    
-    // Legend
-    const legend = svg.append("g")
-        .attr("transform", `translate(${margin.left + width - 120}, ${margin.top})`);
-    
-    legend.append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", 15)
-        .attr("height", 15)
-        .attr("fill", "#4ecdc4");
-    
-    legend.append("text")
-        .attr("x", 20)
-        .attr("y", 12)
-        .attr("font-size", "12px")
-        .text(movie1.title.length > 15 ? movie1.title.substring(0, 15) + "..." : movie1.title);
-    
-    legend.append("rect")
-        .attr("x", 0)
-        .attr("y", 20)
-        .attr("width", 15)
-        .attr("height", 15)
-        .attr("fill", "#ff6b6b");
-    
-    legend.append("text")
-        .attr("x", 20)
-        .attr("y", 32)
-        .attr("font-size", "12px")
-        .text(movie2.title.length > 15 ? movie2.title.substring(0, 15) + "..." : movie2.title);
+    // REMOVE THE LEGEND FROM HERE - it's now at the top
 }
