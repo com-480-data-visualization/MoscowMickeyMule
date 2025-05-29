@@ -33,14 +33,19 @@
     </section>
 
     <section id="map">
-      <h1>🗺️ Studio Map</h1>
+  <h1>🗺️ Studios & Movies Map</h1>
+  <div id="map-container">
+    <div id="layer-toggle"></div>
+    <div style="position: relative;">
       <div id="tooltip" class="tooltip" style="opacity:0;"></div>
       <svg id="world-map" width="960" height="500"></svg>
-      <!-- <img src="img/MAP.png" alt="Map of Animation Studios" /> -->
-    </section>
+    </div>
+  </div>
+  <!-- <img src="img/MAP.png" alt="Map of Animation Studios" /> -->
+</section>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
-    <script src="map.js"></script>
+    <script src="studioMap/map.js"></script>
 
     <section id="genre">
       <h1>📊 Genre Distribution</h1>

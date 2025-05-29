@@ -125,16 +125,92 @@ footer {
   transition: opacity 0.3s ease;
 }
 
-#map h1 {
+/* #map h1 {
   font-size: 1.5rem;
   text-align: left;
   margin-left: 20px;
   color: white;
-}
+  position: relative;
+} */
 
 #world-map {
   border: 2px solid white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   margin: auto;
   display: block;
+  position: relative;
+}
+/* #world-map {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="16" cy="16" r="8" fill="%236A1B9A" stroke="white" stroke-width="3"/></svg>')
+      16 16,
+    pointer;
+} */
+
+/* Center the slider and its label under the map */
+#map-container > div[style] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#sliderLabel {
+  text-align: center;
+  color: white;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+#yearSlider {
+  display: block;
+  margin: 0 auto 24px auto;
+  width: 300px;
+}
+/* Flex container for map and layer toggle */
+#map-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 40px;
+}
+
+/* Style the layer toggle button column */
+#layer-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 30px;
+  min-width: 180px;
+}
+
+/* Style the layer toggle button column */
+#layer-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-right: 18px;
+  margin-top: 30px;
+  min-width: 180px;
+  min-height: auto; /* Ensures space for both buttons */
+}
+
+/* Style for the toggle buttons */
+#layer-toggle button {
+  width: 100%; /* Ensure buttons take full width of the container */
+  padding: 10px 18px;
+  background-color: #fff;
+  color: #000;
+  border: 2px solid #000;
+  border-radius: 8px;
+  font-size: 18px;
+  font-family: "MouseMemoirs", sans-serif;
+  cursor: pointer;
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.15);
+  text-align: left;
+  transition: background 0.2s, color 0.2s;
+}
+
+#layer-toggle button:hover {
+  background: #f6df95;
+  color: #d32f2f;
 }
