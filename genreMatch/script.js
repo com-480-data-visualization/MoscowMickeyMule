@@ -1,4 +1,4 @@
-import { createBarChart, createBubbleChart } from './generateChartFunctions.js';
+import { createBarChart, createTreemap, generateTween } from './generateChartFunctions.js';
 
 let genres = [];
 
@@ -25,7 +25,6 @@ d3.json("genreMatchTopRatings.json")
     createTopMoviesSlide(filteredData); // Create the top movies slide
     createAverageRatingSlide(filteredData); // Create the average rating slide
     createTopStudiosSlide(filteredData); // Create the top studios slide
-    createTotalMovieSlide(filteredData); // Create the total movie count slide
 
   })
 
@@ -70,6 +69,13 @@ function createGrayedGenres(data) {
 // CREATE ACTIVE GENRE SET (ENSURE ANIMATION IS INSIDE)
 const activeGenres = new Set();
 activeGenres.add("Animation");
+
+// Listen for resize and redraw
+window.addEventListener("resize", () => {
+  updateDisplay();  // Make sure 'data' and 'container' are in scope
+});
+
+
 
 /*====================
     DRAG HANDLING
@@ -225,7 +231,6 @@ function draggedInactive(event, d) {
 function dragended(event, d) {
   d3.select(this).style("opacity", 1);
   // Delete the dragged element
-  
 
 }
 
@@ -235,7 +240,7 @@ function dragended(event, d) {
 ====================*/
 
 let currentSlide = 0;
-const totalSlides = 4;
+const totalSlides = 3;
 
 function initializeSlides() {
     // Show first slide
@@ -295,10 +300,8 @@ function updateDisplay() {
     createTopMoviesSlide(filteredData); // Create the top movies slide
     createAverageRatingSlide(filteredData); // Create the average rating slide
     createTopStudiosSlide(filteredData); // Create the top studios slide
-    createTotalMovieSlide(filteredData); // Create the total movie count slide
   })
 }
-
 document.addEventListener('DOMContentLoaded', initializeSlides);
 
 /*====================
@@ -310,16 +313,16 @@ function createTopMoviesSlide(data) {
   // Sort by weighted rating in descending order
   const sorted_data = data.sort((a, b) => b.weighted_rating - a.weighted_rating);
 
-  const topFive = sorted_data.slice(0, 5);
+  const top = sorted_data.slice(0, 25);
   const slide = d3.select("#data-display-1");
   
   // Clear previous content
   slide.selectAll("*").remove();
   
   // Create title
-  slide.append("h4").text("Top 5 Movies by weighted Rating");
-  createBubbleChart(topFive, "#data-display-1");
-  //createBarChart(topFive, "#data-display-1");
+  slide.append("h4").text("Top Movies by Weighted IMBD Rating");
+  createTreemap(top, "#data-display-1", 1.5);
+  
 }
 
 /*====================
@@ -328,28 +331,40 @@ function createTopMoviesSlide(data) {
 
 // Function to create the top 5 movies slide
 function createAverageRatingSlide(data) {
+  
+  const data_size = data.length;
+  
+  const slide_2 = d3.select("#data-display-2-1");
+  
+  // Clear previous content
+  slide_2.selectAll("*").remove();
+  
+  // Create title
+  slide_2.append("h4")
+    .text("Total IMBD Animation Movies");
+  
+  // Create large, centered mean value
+  
+    generateTween(data_size, "#data-display-2-1", 2863);
+  
   // Calculate average rating from data
   let mean = d3.mean(data, d => d.weighted_rating);
-  const slide = d3.select("#data-display-2");
+  const slide_1 = d3.select("#data-display-2-2");
   
   if (isNaN(mean)) {
     console.log("Mean calculation resulted in NaN. Set to 0.");
     mean = 0.0; // Exit if mean is not a number
   }
   // Clear previous content
-  slide.selectAll("*").remove();
+  slide_1.selectAll("*").remove();
   
   // Create title
-  slide.append("h2")
+  slide_1.append("h4")
     .text("Average Rating");
   
-  // Create large, centered mean value
-  slide.append("div")
-    .style("text-align", "center")
-    .style("font-size", "64px")
-    .style("font-weight", "bold")
-    .style("margin-top", "100px")
-    .text(mean.toFixed(2));  // Display mean with 2 decimal places
+  generateTween(mean.toFixed(2), "#data-display-2-2");
+
+  
 }
 
 /*====================
@@ -358,6 +373,7 @@ function createAverageRatingSlide(data) {
 
 // Function to create the top 5 studios slide
 function createTopStudiosSlide(data) {
+  
   // Flatten the production companies arrays and remove empty strings
   const allStudios = data.flatMap(d => d.production_companies)
                          .filter(studio => studio !== "");
@@ -367,11 +383,11 @@ function createTopStudiosSlide(data) {
   
   // Convert to array and sort by count
   const sortedStudios = Array.from(studioCounts, ([studio, count]) => ({ 
-    title: studio,           // Change 'studio' to 'title' to match bar chart format
-    weighted_rating: count   // Change 'count' to 'weighted_rating' to match bar chart format
+    title: studio,           
+    weighted_rating: count  
   }))
   .sort((a, b) => b.weighted_rating - a.weighted_rating)
-  .slice(0, 5); // Get top 5 studios
+  .slice(0, 30); // Get top 5 studios
 
   const slide = d3.select("#data-display-3");
   
@@ -379,35 +395,9 @@ function createTopStudiosSlide(data) {
   slide.selectAll("*").remove();
   
   // Create title
-  slide.append("h2").text("Top 5 Studios by Movie Count");
+  slide.append("h4").text("Top Producing Studios by Movie Count");
   
   // Create bar chart for studios
-  createBarChart(sortedStudios, "#data-display-3");
+  createTreemap(sortedStudios, "#data-display-3", 0.05);
 }
 
-/*====================
-    SLIDE 4 - Total Movie Count
-====================*/
-
-function createTotalMovieSlide(data) {
-  
-  // Calculate average rating from data
-  const data_size = data.length;
-  
-  const slide = d3.select("#data-display-4");
-  
-  // Clear previous content
-  slide.selectAll("*").remove();
-  
-  // Create title
-  slide.append("h2")
-    .text("Total Movies");
-  
-  // Create large, centered mean value
-  slide.append("div")
-    .style("text-align", "center")
-    .style("font-size", "64px")
-    .style("font-weight", "bold")
-    .style("margin-top", "100px")
-    .text(data_size);  // Display mean with 2 decimal places
-}

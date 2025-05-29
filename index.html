@@ -18,40 +18,58 @@
 
     <section id="intro">
       <h1>Animation Insights</h1>
-      <p class="subtitle">
-        Analyzing the Evolution and Impact of Animated Movies Worldwide
-      </p>
-      <p class="subtitle">MoscowMickeyMule</p>
-      <p class="subtitle">
-        Members: Lina Bousbina, Michael Burch, Alessandro Salo
-      </p>
-      <p>
-        Dive into the magical world of animated movies with interactive
-        visualizations. Explore how animation genres have evolved, discover the
-        studios behind them, and compare your favorites in your own way.
-      </p>
+      <div id = "intro-text">
+        <h2>
+          Analyzing the Evolution and Impact of Animated Movies Worldwide
+        </h2>
+        
+        <p>Team: MoscowMickeyMule</p>
+        <p>Members: Lina Bousbina, Michael Burch, Alessandro Salo</p>
+        <p id="maintext">
+          Dive into the magical world of animated movies with interactive
+          visualizations. Explore how animation genres have evolved, discover the
+          studios behind them, and compare your favorites in your own way.
+        </p>
+      </div>
     </section>
 
     <section id="map">
-  <h1>🗺️ Studios & Movies Map</h1>
-  <div id="map-container">
-    <div id="layer-toggle"></div>
-    <div style="position: relative;">
-      <div id="tooltip" class="tooltip" style="opacity:0;"></div>
-      <svg id="world-map" width="960" height="500"></svg>
+  <h1>Studios & Movies Map</h1>
+  <div id="container">
+    <div class="layer-column">
+      <div id="layer-toggle">
+        <button id="movie-layer-btn">🔥 Movie Layer</button>
+        <button id="studio-layer-btn">🎯 Studio Layer</button>
+      </div>
     </div>
+
+    <div id="map-container">
+
+      <div id="tooltip" class="tooltip" style="opacity:0;"></div>
+
+      <svg id="world-map"></svg>
+      
+      <div id="slider"> </div>
+
+      <div id="zoom-controls">
+        <button class="zoom-button" id="zoom-in-btn">🔍 Zoom In</button>
+        <button class="zoom-button" id="zoom-out-btn">🔎 Zoom Out</button>
+      </div>
+    </div>
+
   </div>
   <!-- <img src="img/MAP.png" alt="Map of Animation Studios" /> -->
 </section>
+
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
     <script src="studioMap/map.js"></script>
 
-    <section id="genre">
-      <h1>📊 Genre Distribution</h1>
+  <section id="genre">
+      <h1>Genre Distribution</h1>
       <!-- <img src="img/Genre.png" alt="Genre Distribution" /> -->
-      <iframe src="genreMatch/viz.html" width="100%" height="800px" style="border:none;"></iframe>
-    </section>
+      <iframe src="genreMatch/viz.html" width="90%" height="800px" style="border:none;"></iframe>
+  </section>
 
     <section id="compare">
       <h1>🎥 Movie Comparison</h1>

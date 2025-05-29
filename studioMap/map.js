@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
     addZoomControls();
     addLayerToggle();
   });
-
+  
   function drawMap(world) {
     g.selectAll("path")
       .data(world.features)
@@ -69,42 +69,32 @@ document.addEventListener("DOMContentLoaded", function () {
     const dots = g.selectAll(".studio-dot").data(filtered, (d) => d.Studio);
 
     dots
-      .join("circle")
-      .attr("class", "studio-dot")
-      .attr("cx", (d) => projection([+d.lon, +d.lat])[0])
-      .attr("cy", (d) => projection([+d.lon, +d.lat])[1])
-      .attr("r", 4)
-      .attr("fill", "#ff5722")
-      .attr("opacity", 0.75)
-      .on("click", (_, d) => {
-        tooltip
-          .html(
-            `
-            <div
-              style="
-                font-family: 'MouseMemoirs', cursive;
-                max-height: 150px;
-                overflow: auto;
-                z-index: 1000;
-                position: absolute;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: white;
-                padding: 10px;
-                border-radius: 8px;
-                border: 2px solid #000;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-              "
-            >            
-            <strong>Studio:</strong> ${d.Studio}<br>
-            <strong>Country:</strong> ${d.Country}<br>
-            <strong>Founded:</strong> ${d.Founded}
-          </div>`
-          )
-          .style("opacity", 1);
-      })
-      .on("mouseout", () => tooltip.style("opacity", 0));
+  .join("circle")
+  .attr("class", "studio-dot")
+  .attr("cx", (d) => projection([+d.lon, +d.lat])[0])
+  .attr("cy", (d) => projection([+d.lon, +d.lat])[1])
+  .attr("r", 4)
+  .attr("fill", "rgba(110, 13, 37, 1)")
+  .attr("opacity", 0.75)
+  .on("mouseover", (event, d) => {
+    tooltip
+      .html(`
+        <strong>Studio:</strong> ${d.Studio}<br>
+        <strong>Country:</strong> ${d.Country}<br>
+        <strong>Founded:</strong> ${d.Founded}
+      `)
+      .style("opacity", 1)
+      .style("left", (event.pageX + 10) + "px")  // 10px offset right
+      .style("top", (event.pageY + 10) + "px"); // 10px offset down
+  })
+  .on("mousemove", (event) => {
+    tooltip
+      .style("left", (event.pageX + 10) + "px")
+      .style("top", (event.pageY + 10) + "px");
+  })
+  .on("mouseout", () => {
+    tooltip.style("opacity", 0);
+  });
   }
 
   function drawBubbles(data, year) {
@@ -132,47 +122,63 @@ document.addEventListener("DOMContentLoaded", function () {
       .selectAll(".movie-bubble")
       .data(Object.entries(aggregated));
 
+    let tooltipVisible = false;
+
+    let mouseOverCircle = false;
+    let mouseOverTooltip = false;
+
     bubbles
       .join("circle")
       .attr("class", "movie-bubble")
       .attr("cx", (d) => projection([d[1].lon, d[1].lat])[0])
       .attr("cy", (d) => projection([d[1].lon, d[1].lat])[1])
       .attr("r", (d) => radiusScale(d[1].MovieCount))
-      .attr("fill", "#d32f2f")
+      .attr("fill", "rgba(110, 13, 37, 1)")
       .attr("opacity", 0.6)
-      .on("click", (_, d) => {
+      .on("mouseenter", (event, d) => {
+        mouseOverCircle = true;
+
         tooltip
-          .html(
-            `
-            <div
-              style="
-                font-family: 'MouseMemoirs', cursive;
-                max-height: 150px;
-                overflow: auto;
-                z-index: 1000;
-                position: absolute;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: white;
-                padding: 10px;
-                border-radius: 8px;
-                border: 2px solid #000;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-              "
-            >           
+          .html(`
             <strong>Country:</strong> ${d[0]}<br>
             <strong>Movies (${d[1].MovieCount}):</strong>
             <ul>${d[1].movies.map((m) => `<li>${m}</li>`).join("")}</ul>
-          </div>`
-          )
-          .style("opacity", 1);
+          `)
+          .style("opacity", 1)
+          .style("left", (event.pageX + 10) + "px")
+          .style("top", (event.pageY + 10) + "px")
+          .style("pointer-events", "auto"); // ensure tooltip can capture mouse
       })
-      .on("mouseout", () => tooltip.style("opacity", 0));
+      .on("mousemove", (event) => {
+        tooltip
+          .style("left", (event.pageX - 1) + "px")
+          .style("top", (event.pageY - 1 ) + "px");
+      })
+      .on("mouseleave", () => {
+        mouseOverCircle = false;
+        setTimeout(() => {
+          if (!mouseOverCircle && !mouseOverTooltip) {
+            tooltip.style("opacity", 0).style("pointer-events", "none");
+          }
+        }, 100); // small delay to allow mouse to enter tooltip
+      });
+
+    tooltip
+      .on("mouseenter", () => {
+        mouseOverTooltip = true;
+      })
+      .on("mouseleave", () => {
+        mouseOverTooltip = false;
+        setTimeout(() => {
+          if (!mouseOverCircle && !mouseOverTooltip) {
+            tooltip.style("opacity", 0).style("pointer-events", "none");
+          }
+        }, 100);
+      });
   }
 
   function createSlider(min, max) {
-    const container = d3.select("#map-container > div[style]");
+    const container = d3.select("#slider");
     const label = container
       .append("div")
       .attr("id", "sliderLabel")
@@ -186,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("max", max)
       .attr("value", max)
       .attr("id", "yearSlider")
-      .style("width", "300px")
+      .style("width", "600px")
       .on("input", function () {
         const year = +this.value;
         label.text(`Year: ${year}`);
@@ -196,37 +202,59 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  const zoomBehavior = d3.zoom()
+      .scaleExtent([0.5, 10])  // optional: limits for zoom scale
+      .on("zoom", (event) => {
+        g.attr("transform", event.transform);  // apply zoom/pan transform to your main group
+      });
+
+  svg.call(zoomBehavior);  // attach zoom behavior once
+
   function addZoomControls() {
-    const controls = d3
-      .select("#map-container > div[style]")
-      .append("div")
-      .style("display", "flex")
-      .style("justify-content", "center");
-    controls.html(`
-      <button style="padding:10px;font-size:20px;background:#6A1B9A;color:white;border-radius:8px;font-family:'MouseMemoirs';" onclick="zoom(1.2)">🔍 Zoom In</button>
-      <button style="padding:10px;font-size:20px;background:#6A1B9A;color:white;border-radius:8px;font-family:'MouseMemoirs';" onclick="zoom(0.8)">🔎 Zoom Out</button>`);
-    window.zoom = (factor) =>
-      svg.transition().duration(300).call(d3.zoom().scaleBy, factor);
+    d3.select("#zoom-in-btn").on("click", () => zoomBy(1.2));
+    d3.select("#zoom-out-btn").on("click", () => zoomBy(0.8));
   }
 
-  function addLayerToggle() {
-    const container = d3
-      .select("#layer-toggle")
-      .style("display", "flex")
-      .style("gap", "16px");
-    container.html(`
-      <button style="font-family:'MouseMemoirs';font-size:24px;padding:8px;" onclick="setLayer('movies')">🔥 Movie Layer</button>
-      <button style="font-family:'MouseMemoirs';font-size:24px;padding:8px;" onclick="setLayer('studios')">🎯 Studio Layer</button>`);
-    window.setLayer = (layer) => {
-      activeLayer = layer;
-      g.selectAll("circle").remove();
-      drawMap(globalWorld);
-      const year = +d3.select("#yearSlider").node().value;
-      layer === "studios"
-        ? drawDots(globalStudios, year)
-        : drawBubbles(globalMovies, year);
-    };
+  function zoomBy(factor) {
+    // Use the existing zoomBehavior and call scaleBy on svg
+    svg.transition()
+      .duration(300)
+      .call(zoomBehavior.scaleBy, factor);
   }
+
+    // Call this on initialization
+  addZoomControls();
+
+  function addLayerToggle() {
+    const movieButton = d3.select("#movie-layer-btn");
+    const studioButton = d3.select("#studio-layer-btn");
+  
+    movieButton.on("click", () => setLayer("movies"));
+    studioButton.on("click", () => setLayer("studios"));
+  
+    // Optional: Initialize with a default active layer
+    setLayer("movies");  // Or whichever layer you prefer
+  }
+  
+  function setLayer(layer) {
+    activeLayer = layer;
+    if(!globalWorld) {return;}
+    g.selectAll("circle").remove();
+    drawMap(globalWorld);
+    const year = +d3.select("#yearSlider").node().value;
+    if (layer === "studios") {
+      drawDots(globalStudios, year);
+    } else {
+      drawBubbles(globalMovies, year);
+    }
+  
+    // 🔥 Toggle 'active' class on buttons
+    d3.select("#movie-layer-btn").classed("active", layer === "movies");
+    d3.select("#studio-layer-btn").classed("active", layer === "studios");
+  }
+  
+  // Call this when initializing
+  addLayerToggle();
 
   function showCountryDetails(country) {
     const movies = globalMovies.filter((m) => m.Country === country);
