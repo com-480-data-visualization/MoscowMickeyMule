@@ -1,11 +1,11 @@
 @font-face {
   font-family: "Waltograph";
-  src: url("../fonts/waltographUI.ttf") format("truetype");
+  src: url("fonts/waltographUI.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "MouseMemoirs";
-  src: url("../fonts/MouseMemoirs-Regular.ttf") format("truetype");
+  src: url("fonts/MouseMemoirs-Regular.ttf") format("truetype");
 }
 
 
@@ -17,7 +17,7 @@
 
 body {
   font-family: "Waltograph", cursive;
-  background: linear-gradient(160deg, #ff7043, #ff9d3f, #ffcb52, #fff3b0);
+  background: linear-gradient(160deg, #ff7043, #ff9d3f);
   color: #3b0a00;
   scroll-behavior: smooth;
 }

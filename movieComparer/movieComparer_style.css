@@ -10,13 +10,7 @@
     src: url("../fonts/MouseMemoirs-Regular.ttf") format("truetype");
 }
 
-body {
-    margin: 0;
-    padding: 20px;
-    background: linear-gradient(135deg, #ff9d3f 0%, #e6841a 100%);
-    min-height: 100vh;
-    font-family: "Waltograph", "Arial", sans-serif;
-}
+
 
 #container {
     display: flex;
