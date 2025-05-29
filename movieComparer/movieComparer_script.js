@@ -141,7 +141,7 @@ function initializeWithSampleData() {
 
 function createInterface() {
     // Clear existing content
-    d3.select("#compare").selectAll("*:not(h1)").remove();
+    d3.select("#compare").selectAll("*:not(h1):not(p)").remove();
     
     // Main container
     const container = d3.select("#compare")
@@ -199,8 +199,8 @@ function createInterface() {
         .attr("id", "display-column");
     
     rightPanel.append("h3")
-        .style("font-size", "25px")
-        .style("margin-top", "0px")
+        .style("font-size", "24px")
+        .style("margin-top", "-10px")
         .text("🎬 Movie Battle Arena");
 
     // Movie slots
@@ -298,6 +298,7 @@ function selectMovie(movie) {
 function updateMovieSlot(slotId, movie) {
     const slot = d3.select(`#${slotId}`);
     slot.selectAll("*").remove();
+    slot.text("");
     
     slot.classed("filled", true);
     
@@ -362,16 +363,24 @@ function createComparison() {
     chartContainer.selectAll("*").remove();
     chartContainer.style("display", "block");
     
-    // Add chart title
+    // Add chart title (closer spacing)
     chartContainer.append("div")
-        .attr("class", "chart-title")
-        .text("⚔️ Movie Battle Results ⚔️");
+        .attr("class", "column-title")
+        .style("margin-bottom", "10px");
     
-    // ADD LEGEND HERE - BEFORE THE CHART
+    // Prepare comparison data
+    const metrics = [
+        { name: "Rating", value1: movie1.vote_average, value2: movie2.vote_average, max: 10, unit: "/10" },
+        { name: "Revenue", value1: movie1.revenue / 1000000, value2: movie2.revenue / 1000000, max: Math.max(movie1.revenue, movie2.revenue) / 1000000 || 1000, unit: "M$" },
+        { name: "Runtime", value1: movie1.runtime, value2: movie2.runtime, max: Math.max(movie1.runtime, movie2.runtime) || 200, unit: "min" },
+        { name: "Budget", value1: movie1.budget / 1000000, value2: movie2.budget / 1000000, max: Math.max(movie1.budget, movie2.budget) / 1000000 || 200, unit: "M$" }
+    ];
+    
+    // ADD LEGEND HERE - BEFORE THE CHART (closer spacing)
     const legend = chartContainer.append("div")
         .attr("class", "comparison-legend")
-        .style("margin-bottom", "20px")  // Space below legend
-        .style("margin-top", "10px");    // Space above legend
+        .style("margin-bottom", "10px")  // Reduced space below legend
+        .style("margin-top", "10px");    // Reduced space above legend
     
     const legend1 = legend.append("div")
         .attr("class", "legend-item");
@@ -393,24 +402,15 @@ function createComparison() {
     legend2.append("span")
         .text(movie2.title.length > 15 ? movie2.title.substring(0, 15) + "..." : movie2.title);
     
-    // Prepare comparison data
-    const metrics = [
-        { name: "Rating", value1: movie1.vote_average, value2: movie2.vote_average, max: 10, unit: "/10" },
-        { name: "Revenue", value1: movie1.revenue / 1000000, value2: movie2.revenue / 1000000, max: Math.max(movie1.revenue, movie2.revenue) / 1000000 || 1000, unit: "M$" },
-        { name: "Runtime", value1: movie1.runtime, value2: movie2.runtime, max: Math.max(movie1.runtime, movie2.runtime) || 200, unit: "min" },
-        { name: "Budget", value1: movie1.budget / 1000000, value2: movie2.budget / 1000000, max: Math.max(movie1.budget, movie2.budget) / 1000000 || 200, unit: "M$" }
-    ];
-    
-    // Chart dimensions
-    const margin = { top: 60, right: 80, bottom: 60, left: 100 };  // Reduced top margin since legend is above
-    const width = 800 - margin.left - margin.right;
-    const height = 300 - margin.top - margin.bottom;  // Slightly reduced height
+    // Chart dimensions (bigger chart)
+    const margin = { top: 40, right: 80, bottom: 60, left: 100 };  // Reduced top margin
+    const width = 900 - margin.left - margin.right;  // Increased width
+    const height = 350 - margin.top - margin.bottom;  // Increased height
     
     // Create SVG
     const svg = chartContainer.append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .style("background", "rgba(255, 255, 255, 0.05)")
         .style("border-radius", "0px");
     
     const g = svg.append("g")
@@ -420,10 +420,15 @@ function createComparison() {
     const yScale = d3.scaleBand()
         .domain(metrics.map(d => d.name))
         .range([0, height])
-        .padding(0.4);
+        .padding(0.6);
     
     const xScale = d3.scaleLinear()
         .domain([0, d3.max(metrics, d => Math.max(d.value1, d.value2))])
+        .range([0, width]);
+
+    // Create a separate scale for rating (0-10)
+    const ratingScale = d3.scaleLinear()
+        .domain([0, 10])
         .range([0, width]);
     
     // Create groups for each metric
@@ -432,58 +437,67 @@ function createComparison() {
         .enter().append("g")
         .attr("class", "metric-group")
         .attr("transform", d => `translate(0,${yScale(d.name)})`);
-    
-    // Movie 1 bars
-    metricGroups.append("rect")
-        .attr("class", "bar-movie1")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", 0)
-        .attr("height", yScale.bandwidth() / 2.5)
-        .attr("fill", "rgba(86, 22, 67, 1)")
-        .attr("rx", 4)
-        .transition()
-        .duration(1000)
-        .attr("width", d => xScale(d.value1));
-    
-    // Movie 2 bars
-    metricGroups.append("rect")
-        .attr("class", "bar-movie2")
-        .attr("x", 0)
-        .attr("y", yScale.bandwidth() / 2)
-        .attr("width", 0)
-        .attr("height", yScale.bandwidth() / 2.5)
-        .attr("fill", "rgba(110, 13, 37, 1)")
-        .attr("rx", 4)
-        .transition()
-        .duration(1000)
-        .delay(200)
-        .attr("width", d => xScale(d.value2));
-    
-    // Add value labels
-    metricGroups.append("text")
-        .attr("class", "value-label")
-        .attr("x", d => xScale(d.value1) + 8)
-        .attr("y", yScale.bandwidth() / 5)
-        .attr("dy", "0.35em")
-        .attr("opacity", 0)
-        .text(d => `${d.value1.toFixed(1)}${d.unit}`)
-        .transition()
-        .duration(500)
-        .delay(1200)
-        .attr("opacity", 1);
-    
-    metricGroups.append("text")
-        .attr("class", "value-label")
-        .attr("x", d => xScale(d.value2) + 8)
-        .attr("y", (yScale.bandwidth() / 5) * 3.5)
-        .attr("dy", "0.35em")
-        .attr("opacity", 0)
-        .text(d => `${d.value2.toFixed(1)}${d.unit}`)
-        .transition()
-        .duration(500)
-        .delay(1400)
-        .attr("opacity", 1);
+
+    // Create bars with different scales for rating vs other metrics
+    metricGroups.each(function(d) {
+        const group = d3.select(this);
+        const isRating = d.name === "Rating";
+        const scale = isRating ? ratingScale : xScale;
+        
+        // Movie 1 bars (fatter bars)
+        group.append("rect")
+            .attr("class", "bar-movie1")
+            .attr("x", 0)
+            .attr("y", -10)
+            .attr("width", 0)
+            .attr("height", yScale.bandwidth() / 1.1)  // Changed from 2.5 to 2 for fatter bars
+            .attr("fill", "rgba(86, 22, 67, 1)")
+            .attr("rx", 4)
+            .transition()
+            .duration(1000)
+            .attr("width", scale(d.value1));
+        
+        // Movie 2 bars (fatter bars)
+        group.append("rect")
+            .attr("class", "bar-movie2")
+            .attr("x", 0)
+            .attr("y", yScale.bandwidth() / 2)
+            .attr("width", 0)
+            .attr("height", yScale.bandwidth() / 1.1)  // Changed from 2.5 to 2 for fatter bars
+            .attr("fill", "rgba(110, 13, 37, 1)")
+            .attr("rx", 4)
+            .transition()
+            .duration(1000)
+            .delay(200)
+            .attr("width", scale(d.value2));
+        
+        // Add value labels
+        group.append("text")
+            .attr("class", "value-label")
+            .attr("x", scale(d.value1) + 8)
+            .attr("y", (yScale.bandwidth() / 5) * 0.001)
+            .attr("dy", "0.35em")
+            .attr("opacity", 0)
+            .text(`${d.value1.toFixed(1)}${d.unit}`)
+            .transition()
+            .duration(500)
+            .delay(1200)
+            .attr("opacity", 1);
+        
+        group.append("text")
+            .attr("class", "value-label")
+            .attr("x", scale(d.value2) + 8)
+            .attr("y", (yScale.bandwidth() / 5) * 4.5)
+            .attr("dy", "0.35em")
+            .attr("opacity", 0)
+            .text(`${d.value2.toFixed(1)}${d.unit}`)
+            .transition()
+            .duration(500)
+            .delay(1400)
+            .attr("opacity", 1);
+        
+        // Add axis only for rating row
+    });
     
     // Y axis labels
     g.append("g")
@@ -497,6 +511,4 @@ function createComparison() {
         .attr("dy", "0.35em")
         .attr("text-anchor", "end")
         .text(d => d.name);
-    
-    // REMOVE THE LEGEND FROM HERE - it's now at the top
 }
