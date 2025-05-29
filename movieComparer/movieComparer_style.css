@@ -2,19 +2,23 @@
 
 @font-face {
     font-family: "Waltograph";
-    src: url("../fonts/waltographUI.ttf") format("truetype");
-}
-
-@font-face {
+    src: url("../fonts/waltographUI.ttf") format("truetype"),
+         url("../fonts/waltographUI.woff2") format("woff2"),
+         url("../fonts/waltographUI.woff") format("woff");
+    font-display: swap;
+  }
+  
+  @font-face {
     font-family: "MouseMemoirs";
-    src: url("../fonts/MouseMemoirs-Regular.ttf") format("truetype");
-}
-
-
+    src: url("../fonts/MouseMemoirs-Regular.ttf") format("truetype"),
+         url("../fonts/MouseMemoirs-Regular.woff2") format("woff2"),
+         url("../fonts/MouseMemoirs-Regular.woff") format("woff");
+    font-display: swap;
+  }
 
 #container {
     display: flex;
-    padding: 1.25rem;  
+    padding: 1.25rem;
     width: auto;
     height: 40rem;
     font-family: "Waltograph", cursive;
@@ -22,27 +26,26 @@
 }
 
 .column {
-    width: 40%;   
-    height: 100%; 
-    padding: 0.625rem;   
+    width: 40%;
+    height: 100%;
+    padding: 0.625rem;
     border: 2px solid white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     display: block;
-    background: 
-        repeating-linear-gradient(
-            45deg,
-            rgba(255, 255, 255, 0.05), 
-            rgba(255, 255, 255, 0.05) 8px,
-            transparent 8px,
-            transparent 16px
-        );
-    border-radius: 0px;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.05) 8px,
+        transparent 8px,
+        transparent 16px
+    );
+    border-radius: 0;
 }
 
 .column-title {
-    margin-bottom: 0.9375rem;  
-    padding-bottom: 0.5rem;   
-    margin-top: 0px;
+    margin-bottom: 0.9375rem;
+    padding-bottom: 0.5rem;
+    margin-top: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -57,20 +60,19 @@
     padding: 20px;
     border: 2px solid white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    display: flex; 
-    flex-direction: column; 
+    display: flex;
+    flex-direction: column;
     color: #fff;
-    height: 100%; 
+    height: 100%;
     width: 100%;
-    background: 
-        repeating-linear-gradient(
-            45deg,
-            rgba(255, 255, 255, 0.05), 
-            rgba(255, 255, 255, 0.05) 8px,
-            transparent 8px,
-            transparent 16px
-        );
-    border-radius: 0px;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.05) 8px,
+        transparent 8px,
+        transparent 16px
+    );
+    border-radius: 0;
     min-width: 1000px;
 }
 
@@ -113,19 +115,23 @@ select {
 #movie-results {
     max-height: 400px;
     overflow-y: auto;
-    background: 
-        repeating-linear-gradient(
-            45deg,
-            rgba(255, 255, 255, 0.4), 
-            rgba(255, 255, 255, 0.4) 8px,
-            transparent 8px,
-            transparent 16px
-        );
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.4),
+        rgba(255, 255, 255, 0.4) 8px,
+        transparent 8px,
+        transparent 16px
+    );
     padding: 10px;
     border-radius: 8px;
     border: 1px solid white;
+
+    /* Firefox-specific scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 157, 63, 0.8) rgba(255, 157, 63, 0.3);
 }
 
+/* WebKit scrollbars for Chrome, Safari */
 #movie-results::-webkit-scrollbar {
     width: 8px;
 }
@@ -143,12 +149,6 @@ select {
 
 #movie-results::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 157, 63, 1);
-}
-
-/* Firefox */
-#movie-results {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 157, 63, 0.8) rgba(255, 157, 63, 0.3);
 }
 
 .movie-card {
@@ -345,4 +345,42 @@ select {
         padding: 0.5rem;
     }
 }
+
+@media (max-width: 1200px) {
+    #container {
+        flex-direction: column;
+        height: auto;
+        gap: 15px;
+    }
+
+    .column {
+        width: 100%;
+        height: 300px;
+    }
+
+    #display-column {
+        width: 100%;
+        height: auto;
+        min-height: 500px;
+    }
+
+    .slots-container {
+        flex-direction: column;
+    }
+
+    .movie-slot {
+        height: 80px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    #container {
+        padding: 0.5rem;
+    }
+}
+
 
