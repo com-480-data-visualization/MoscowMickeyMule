@@ -1,11 +1,17 @@
 @font-face {
   font-family: "Waltograph";
-  src: url("fonts/waltographUI.ttf") format("truetype");
+  src: url("fonts/waltographUI.ttf") format("truetype"),
+       url("fonts/waltographUI.woff2") format("woff2"),
+       url("fonts/waltographUI.woff") format("woff");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "MouseMemoirs";
-  src: url("fonts/MouseMemoirs-Regular.ttf") format("truetype");
+  src: url("fonts/MouseMemoirs-Regular.ttf") format("truetype"),
+       url("fonts/MouseMemoirs-Regular.woff2") format("woff2"),
+       url("fonts/MouseMemoirs-Regular.woff") format("woff");
+  font-display: swap;
 }
 
 
@@ -14,12 +20,13 @@
   padding: 0;
   box-sizing: border-box;
 }
-
 body {
   font-family: "Waltograph", cursive;
   background: linear-gradient(160deg, #ff7043, #ff9d3f);
   color: #3b0a00;
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 nav {
@@ -201,7 +208,6 @@ footer {
 }
 
 #yearSlider {
-  -webkit-appearance: none; /* Remove default */
   width: 600px;
   height: 8px;
   background: rgba(110, 13, 37, 0.5);
@@ -209,11 +215,10 @@ footer {
   outline: none;
   opacity: 0.9;
   transition: opacity .2s;
+  appearance: none; /* For Firefox */
 }
 
-/* Thumb for Chrome/Safari/Edge */
 #yearSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
   appearance: none;
   width: 20px;
   height: 20px;
@@ -228,7 +233,6 @@ footer {
   background: #561643; 
 }
 
-/* Thumb for Firefox */
 #yearSlider::-moz-range-thumb {
   width: 20px;
   height: 20px;
@@ -242,10 +246,41 @@ footer {
   background: #561643;
 }
 
-/* Track for Firefox */
 #yearSlider::-moz-range-track {
   background: rgba(110, 13, 37, 0.5);
   height: 8px;
+  border-radius: 5px;
+}
+
+#yearSlider::-moz-range-progress {
+  background: rgba(110, 13, 37, 1);
+  height: 8px;
+  border-radius: 5px;
+}
+
+#yearSlider::-ms-thumb {
+  width: 20px;
+  height: 20px;
+  background: #561643;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+#yearSlider::-ms-track {
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+  height: 8px;
+}
+
+#yearSlider::-ms-fill-lower {
+  background: rgba(110, 13, 37, 1);
+  border-radius: 5px;
+}
+
+#yearSlider::-ms-fill-upper {
+  background: rgba(110, 13, 37, 0.5);
   border-radius: 5px;
 }
 
