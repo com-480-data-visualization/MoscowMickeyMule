@@ -200,7 +200,7 @@ function createInterface() {
     
     rightPanel.append("h3")
         .style("font-size", "25px")
-        .style("margin-top", "-10px")
+        .style("margin-top", "0px")
         .text("🎬 Movie Battle Arena");
 
     // Movie slots
